@@ -121,7 +121,17 @@ export function LineChart({
 
   // Direct end-labels need a right gutter; drop them on narrow screens.
   const tentativeLabels = !narrow;
-  const margin = { top: 12, right: tentativeLabels ? 88 : 16, bottom: 28, left: 44 };
+  // ~6.8px per character at 12px; name + space + value, plus the 9px offset.
+  const longestLabel = Math.max(
+    0,
+    ...withData.map((s) => `${s.name} ${formatInt(s.points[s.points.length - 1].v)}`.length),
+  );
+  const margin = {
+    top: 12,
+    right: tentativeLabels ? Math.min(180, Math.max(88, Math.ceil(longestLabel * 6.8) + 16)) : 16,
+    bottom: 28,
+    left: 44,
+  };
   const plotW = Math.max(40, width - margin.left - margin.right);
   const plotH = height - margin.top - margin.bottom;
   const sx = (t: number) => margin.left + ((t - x0) / (x1 - x0)) * plotW;

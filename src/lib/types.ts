@@ -1,9 +1,13 @@
+import type { TalentTree } from "./extra";
+
 export type ColorSlot = 1 | 2 | 3 | 4;
 
 export interface CharacterConfig {
   /** AOTC.gg profile slug, e.g. "taipan-ismydaddy". */
   slug: string;
   region: string;
+  /** Realm or realm type as shown on AOTC.gg, e.g. "Normal". Omitted when unknown. */
+  realm?: string;
   displayName: string;
   aotcUrl: string;
   /** Fixed categorical color slot. Color follows the character, never its rank. */
@@ -30,6 +34,10 @@ export interface Snapshot {
   className?: string | null;
   race?: string | null;
   guild?: string | null;
+  honorableKills?: number | null;
+  /** Character-sheet stats keyed by STAT_DEFS keys (percentages as numbers, e.g. 5.3). */
+  stats?: Record<string, number> | null;
+  talents?: TalentTree[] | null;
   note?: string | null;
 }
 
@@ -62,6 +70,7 @@ export interface CharacterSummary {
   slug: string;
   displayName: string;
   region: string;
+  realm: string | null;
   aotcUrl: string;
   colorSlot: ColorSlot;
   level: number | null;
@@ -70,6 +79,9 @@ export interface CharacterSummary {
   className: string | null;
   race: string | null;
   guild: string | null;
+  honorableKills: number | null;
+  /** Stats and talents from the latest snapshot that has them (never mixed across snapshots). */
+  sheet: { capturedAt: string; stats: Record<string, number>; talents: TalentTree[] | null } | null;
   lastUpdated: string | null;
   snapshotCount: number;
   /**

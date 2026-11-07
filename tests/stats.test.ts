@@ -19,6 +19,7 @@ function row(name: string, level: number | null, gearScore: number | null): Char
     slug: name.toLowerCase(),
     displayName: name,
     region: "eu",
+    realm: null,
     aotcUrl: "",
     colorSlot: 1,
     level,
@@ -27,6 +28,8 @@ function row(name: string, level: number | null, gearScore: number | null): Char
     className: null,
     race: null,
     guild: null,
+    honorableKills: null,
+    sheet: null,
     lastUpdated: null,
     snapshotCount: 0,
     levelDelta: null,
@@ -72,6 +75,32 @@ describe("summarize", () => {
       snap({ capturedAt: "2026-11-10T00:00:00Z", level: 50 }),
     ]);
     expect(s.levelDelta).toEqual({ value: 10, days: 7 });
+  });
+});
+
+describe("character sheet", () => {
+  it("takes stats and talents from the latest snapshot that has them, without mixing", () => {
+    const s = summarize(taipan, [
+      snap({ capturedAt: "2026-11-06T10:00:00Z", level: 15, stats: { health: 300, mana: 700 }, honorableKills: 0 }),
+      snap({
+        capturedAt: "2026-11-07T10:00:00Z",
+        level: 18,
+        stats: { health: 357 },
+        talents: [{ tree: "Shadow", points: 7 }],
+      }),
+      snap({ capturedAt: "2026-11-08T10:00:00Z", level: 19 }),
+    ]);
+    expect(s.sheet).toEqual({
+      capturedAt: "2026-11-07T10:00:00Z",
+      stats: { health: 357 },
+      talents: [{ tree: "Shadow", points: 7 }],
+    });
+    expect(s.honorableKills).toBe(0);
+    expect(s.level).toBe(19);
+  });
+
+  it("is null when no snapshot has stats", () => {
+    expect(summarize(taipan, [snap({ capturedAt: "2026-11-07T10:00:00Z", level: 3 })]).sheet).toBeNull();
   });
 });
 

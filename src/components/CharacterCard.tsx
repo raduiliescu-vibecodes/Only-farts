@@ -20,7 +20,7 @@ export function CharacterCard({
             <Link href={`/character/${c.slug}`}>{c.displayName}</Link>
           </h3>
           <div className="card-sub">
-            {c.slug} · {c.region.toUpperCase()}
+            {c.slug} · {[c.region.toUpperCase(), c.realm].filter(Boolean).join(" ")}
             {subtitle && <> · {subtitle}</>}
           </div>
         </div>

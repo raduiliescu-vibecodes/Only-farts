@@ -32,7 +32,8 @@ export default function Dashboard() {
         <h1>The Only Farts progress board</h1>
         <p className="lede">
           Four heroes, one leaderboard: who levels fastest and who wears the best gear. Rankings,
-          Gear Score and level history for Taipan, Phender, Fishlock and Sisu.
+          Gear Score and level history for{" "}
+          {new Intl.ListFormat("en-GB", { type: "conjunction" }).format(characters.map((c) => c.displayName))}.
         </p>
         <SyncBanner statuses={characters.map((c) => syncStatus.characters[c.slug] ?? NEVER)} />
       </section>
@@ -56,7 +57,7 @@ export default function Dashboard() {
         <StatTile
           label={`At level ${MAX_LEVEL}`}
           value={`${capped} / ${characters.length}`}
-          detail={`${formatInt(history.snapshots.length)} snapshots recorded`}
+          detail={`${formatInt(history.snapshots.length)} ${history.snapshots.length === 1 ? "snapshot" : "snapshots"} recorded`}
         />
       </section>
 

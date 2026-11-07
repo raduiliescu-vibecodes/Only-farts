@@ -21,7 +21,7 @@ export function snapshotsFor(snapshots: Snapshot[], slug: string): Snapshot[] {
     .sort((a, b) => time(a) - time(b));
 }
 
-type NumericField = "level" | "gearScore" | "itemLevel";
+type NumericField = "level" | "gearScore" | "itemLevel" | "honorableKills";
 type TextField = "className" | "race" | "guild";
 
 function latestValue<K extends NumericField | TextField>(
@@ -66,6 +66,17 @@ function delta7d(ordered: Snapshot[], field: NumericField): Delta | null {
   return { value: (last[field] as number) - base.v, days };
 }
 
+function latestSheet(ordered: Snapshot[]): CharacterSummary["sheet"] {
+  for (let i = ordered.length - 1; i >= 0; i--) {
+    const s = ordered[i];
+    const hasStats = s.stats && Object.keys(s.stats).length > 0;
+    if (hasStats || (s.talents && s.talents.length > 0)) {
+      return { capturedAt: s.capturedAt, stats: s.stats ?? {}, talents: s.talents ?? null };
+    }
+  }
+  return null;
+}
+
 export function summarize(
   character: CharacterConfig,
   snapshots: Snapshot[],
@@ -76,6 +87,7 @@ export function summarize(
     slug: character.slug,
     displayName: character.displayName,
     region: character.region,
+    realm: character.realm ?? null,
     aotcUrl: character.aotcUrl,
     colorSlot: character.colorSlot,
     level: latestValue(ordered, "level"),
@@ -84,6 +96,8 @@ export function summarize(
     className: latestValue(ordered, "className"),
     race: latestValue(ordered, "race"),
     guild: latestValue(ordered, "guild"),
+    honorableKills: latestValue(ordered, "honorableKills"),
+    sheet: latestSheet(ordered),
     lastUpdated: last ? last.capturedAt : null,
     snapshotCount: ordered.length,
     levelDelta: delta7d(ordered, "level"),

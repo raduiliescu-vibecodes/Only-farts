@@ -4,13 +4,15 @@
  * One character:
  *   npm run snapshot -- --character taipan-ismydaddy --level 42 --gear-score 1234 \
  *     [--item-level 48] [--class Warrior] [--race Orc] [--guild "Only Farts"] \
- *     [--note "Hit 42 in Stranglethorn"] [--at 2026-11-07T18:00:00Z]
+ *     [--note "Hit 42 in Stranglethorn"] [--at 2026-11-07T18:00:00Z] \
+ *     [--extra "health=357; mana=839; spell crit=5.3%; honorable kills=0; talents=Discipline 2 / Holy 0 / Shadow 7"]
  *
  * All characters at once from environment variables (used by the GitHub workflow):
  *   npm run snapshot -- --from-env
  *   LEVEL_TAIPAN_ISMYDADDY=42 GEAR_SCORE_TAIPAN_ISMYDADDY=1234 ITEM_LEVEL_… NOTE=… AT=…
  */
 import { parseArgs } from "node:util";
+import { parseExtra } from "../src/lib/extra";
 import { appendSnapshot } from "../src/lib/snapshots";
 import type { CharacterConfig, Snapshot } from "../src/lib/types";
 import { PATHS, nowIso, readCharacters, readHistory, writeJsonIfChanged } from "./files";
@@ -61,6 +63,7 @@ function build(
     race?: string;
     guild?: string;
     note?: string;
+    extra?: string;
   },
   capturedAt: string,
 ): Snapshot | null {
@@ -69,6 +72,7 @@ function build(
   const itemLevel = decimal(`${c.displayName} item level`, values.itemLevel, 1, 999);
   if (level === null && gearScore === null && itemLevel === null) return null;
   const snap: Snapshot = { character: c.slug, capturedAt, source: "manual", level, gearScore, itemLevel };
+  const extra = parseExtra(values.extra);
   const className = text(values.className);
   const race = text(values.race);
   const guild = text(values.guild);
@@ -76,6 +80,9 @@ function build(
   if (className) snap.className = className;
   if (race) snap.race = race;
   if (guild) snap.guild = guild;
+  if (extra.honorableKills !== undefined) snap.honorableKills = extra.honorableKills;
+  if (extra.stats) snap.stats = extra.stats;
+  if (extra.talents) snap.talents = extra.talents;
   if (note) snap.note = note;
   return snap;
 }
@@ -91,6 +98,7 @@ async function main() {
       race: { type: "string" },
       guild: { type: "string" },
       note: { type: "string" },
+      extra: { type: "string" },
       at: { type: "string" },
       "from-env": { type: "boolean" },
     },
@@ -135,6 +143,7 @@ async function main() {
         race: values.race,
         guild: values.guild,
         note: values.note,
+        extra: values.extra,
       },
       timestamp(values.at),
     );
@@ -146,7 +155,11 @@ async function main() {
   await writeJsonIfChanged(PATHS.history, history);
   for (const s of snaps) {
     console.log(
-      `Recorded ${s.character} @ ${s.capturedAt}: level ${s.level ?? "–"}, GS ${s.gearScore ?? "–"}, ilvl ${s.itemLevel ?? "–"}`,
+      `Recorded ${s.character} @ ${s.capturedAt}: level ${s.level ?? "–"}, GS ${s.gearScore ?? "–"}, ilvl ${s.itemLevel ?? "–"}` +
+        `${s.race || s.className ? `, ${[s.race, s.className].filter(Boolean).join(" ")}` : ""}` +
+        `${s.stats ? `, ${Object.keys(s.stats).length} stats` : ""}` +
+        `${s.talents ? `, talents ${s.talents.map((t) => `${t.tree} ${t.points}`).join(" / ")}` : ""}` +
+        `${s.honorableKills !== undefined ? `, HK ${s.honorableKills}` : ""}`,
     );
   }
 }

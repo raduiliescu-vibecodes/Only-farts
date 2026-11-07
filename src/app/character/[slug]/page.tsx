@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CharacterSheet } from "@/components/CharacterSheet";
 import { Delta } from "@/components/Delta";
 import { LevelMeter } from "@/components/LevelMeter";
 import { LineChart } from "@/components/LineChart";
@@ -45,6 +46,7 @@ export default async function CharacterPage(props: PageProps<"/character/[slug]"
   const gsRank = rankBy(all, "gearScore").find((r) => r.slug === slug)?.rank ?? null;
   const levelRank = rankBy(all, "level").find((r) => r.slug === slug)?.rank ?? null;
   const pace = levelPace(ordered);
+  const rankedByGs = all.filter((s) => s.gearScore !== null).length;
   const sync = syncStatus.characters[slug];
 
   const levelSeries = seriesFor([config], history.snapshots, "level");
@@ -63,7 +65,7 @@ export default async function CharacterPage(props: PageProps<"/character/[slug]"
           <div>
             <h1>{c.displayName}</h1>
             <p className="secondary">
-              {c.slug} · {c.region.toUpperCase()}
+              {c.slug} · {[c.region.toUpperCase(), c.realm].filter(Boolean).join(" ")}
               {subtitle && <> · {subtitle}</>}
               {c.guild && <> · &lt;{c.guild}&gt;</>}
             </p>
@@ -98,7 +100,11 @@ export default async function CharacterPage(props: PageProps<"/character/[slug]"
         <StatTile
           label="Rank"
           value={gsRank ? `#${gsRank}` : "—"}
-          detail={`By Gear Score · #${levelRank ?? "—"} by level`}
+          detail={
+            gsRank
+              ? `By Gear Score, of ${rankedByGs} with data · #${levelRank ?? "—"} by level`
+              : "Needs a Gear Score snapshot"
+          }
         />
         <StatTile
           label="Leveling pace"
@@ -106,6 +112,8 @@ export default async function CharacterPage(props: PageProps<"/character/[slug]"
           detail={pace === null ? "Needs two level snapshots" : `Levels per day over the last ${formatWindow(pace.days)}`}
         />
       </section>
+
+      <CharacterSheet c={c} />
 
       <section aria-labelledby="lvl-h" className="section panel">
         <div className="section-head">

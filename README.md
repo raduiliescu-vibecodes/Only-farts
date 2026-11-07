@@ -46,13 +46,20 @@ snapshots with no code changes, as long as the page exposes the data in one of t
 
 Until then, record values by hand from each character's AOTC.gg page:
 
-- **From GitHub (works on mobile):** Actions → *Record snapshot* → *Run workflow*. Fill in any
-  levels / Gear Scores you have and leave the rest blank.
+- **From GitHub (works on mobile):** Actions → *Record snapshot* → *Run workflow*, one character
+  per run. Pick the character and fill in what the AOTC.gg page shows; leave unknown fields blank.
+  - **Captured at:** when you read the values, with a time zone, e.g. `2026-11-07T17:27+02:00`
+    (Romania in winter is `+02:00`, in summer `+03:00`). Blank means "now".
+  - **Extra stats:** optional character-sheet details as `key=value` pairs separated by `;`, e.g.
+    `health=357; mana=839; intellect=52; spirit=62; stamina=31; spell power=35; spell crit=5.3%; armor=226; honorable kills=0; talents=Discipline 2 / Holy 0 / Shadow 7`.
+    Unknown keys are rejected, so typos never reach the site.
 - **From a terminal:**
 
   ```bash
-  npm run snapshot -- --character taipan-ismydaddy --level 42 --gear-score 1234 \
-    --item-level 48 --class Hunter --race "Night Elf" --note "Dinged 42"
+  npm run snapshot -- --character taipan-ismydaddy --level 18 --gear-score 78 \
+    --item-level 8 --class Priest --race Human --at 2026-11-07T17:27+02:00 \
+    --extra "health=357; mana=839; talents=Discipline 2 / Holy 0 / Shadow 7" \
+    --note "From AOTC.gg screenshots"
   ```
 
 ## Development

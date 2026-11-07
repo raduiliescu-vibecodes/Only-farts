@@ -716,6 +716,54 @@ h2 {
   filter: brightness(1.08);
 }
 
+/* Character sheet ----------------------------------------------------------- */
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 130px), 1fr));
+  gap: 8px;
+}
+.sheet-grid > div {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.sheet-grid dt {
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+.sheet-grid dd {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.talents {
+  margin-top: 16px;
+}
+.talents-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.talent-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.talent-list li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 0.875rem;
+}
+.talent-points {
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
 /* How-it-works ------------------------------------------------------------- */
 .how ol {
   margin-top: 12px;
