@@ -1,3 +1,40 @@
 {
-  "snapshots": []
+  "snapshots": [
+    {
+      "character": "taipan-ismydaddy",
+      "capturedAt": "2026-11-07T15:27:00Z",
+      "source": "manual",
+      "level": 18,
+      "gearScore": 78,
+      "itemLevel": 8,
+      "className": "Priest",
+      "race": "Human",
+      "honorableKills": 0,
+      "stats": {
+        "health": 357,
+        "mana": 839,
+        "intellect": 52,
+        "spirit": 62,
+        "stamina": 31,
+        "spellPower": 35,
+        "spellCrit": 5.3,
+        "armor": 226
+      },
+      "talents": [
+        {
+          "tree": "Discipline",
+          "points": 2
+        },
+        {
+          "tree": "Holy",
+          "points": 0
+        },
+        {
+          "tree": "Shadow",
+          "points": 7
+        }
+      ],
+      "note": "From AOTC.gg screenshots, 7 Nov 2026 ~17:26–17:28 Romania time"
+    }
+  ]
 }
