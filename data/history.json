@@ -129,6 +129,53 @@
         }
       ],
       "note": "From AOTC.gg screenshots, 7 Nov 2026 ~17:47–17:48 Romania time"
+    },
+    {
+      "character": "sisu-jr",
+      "capturedAt": "2026-11-07T15:51:00Z",
+      "source": "manual",
+      "level": 17,
+      "gearScore": 41,
+      "itemLevel": 8,
+      "className": "Rogue",
+      "race": "Human",
+      "honorableKills": 0,
+      "stats": {
+        "health": 380,
+        "energy": 100,
+        "strength": 34,
+        "agility": 57,
+        "intellect": 23,
+        "stamina": 37,
+        "spirit": 34,
+        "attackPower": 105,
+        "mainHandDps": 14,
+        "offHandDps": 7.1,
+        "meleeCrit": 9.4,
+        "rangedCrit": 9,
+        "spellPower": 4,
+        "spellCrit": 1,
+        "armor": 403,
+        "defense": 79,
+        "dodge": 17,
+        "parry": 4.8,
+        "block": 0
+      },
+      "talents": [
+        {
+          "tree": "Assassination",
+          "points": 0
+        },
+        {
+          "tree": "Combat",
+          "points": 0
+        },
+        {
+          "tree": "Subtlety",
+          "points": 7
+        }
+      ],
+      "note": "From AOTC.gg screenshots, 7 Nov 2026 ~17:50–17:51 Romania time"
     }
   ]
 }
