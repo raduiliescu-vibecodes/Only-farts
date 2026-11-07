@@ -82,6 +82,53 @@
         }
       ],
       "note": "From AOTC.gg screenshots, 7 Nov 2026 ~17:42–17:43 Romania time"
+    },
+    {
+      "character": "fishlock-thefirst",
+      "capturedAt": "2026-11-07T15:48:00Z",
+      "source": "manual",
+      "level": 17,
+      "gearScore": 68,
+      "itemLevel": 9,
+      "className": "Warlock",
+      "race": "Human",
+      "honorableKills": 0,
+      "stats": {
+        "health": 453,
+        "mana": 868,
+        "strength": 27,
+        "agility": 26,
+        "intellect": 56,
+        "stamina": 46,
+        "spirit": 47,
+        "attackPower": 20,
+        "mainHandDps": 9.4,
+        "meleeCrit": 3.9,
+        "rangedCrit": 5.8,
+        "spellPower": 29,
+        "spellCrit": 6.3,
+        "manaRegen": 58,
+        "armor": 220,
+        "defense": 80,
+        "dodge": 4.7,
+        "parry": 0,
+        "block": 0
+      },
+      "talents": [
+        {
+          "tree": "Affliction",
+          "points": 8
+        },
+        {
+          "tree": "Demonology",
+          "points": 0
+        },
+        {
+          "tree": "Destruction",
+          "points": 0
+        }
+      ],
+      "note": "From AOTC.gg screenshots, 7 Nov 2026 ~17:47–17:48 Romania time"
     }
   ]
 }
