@@ -1,0 +1,34 @@
+{
+  "game": "World of Warcraft: Forever",
+  "maxLevel": 60,
+  "characters": [
+    {
+      "slug": "taipan-ismydaddy",
+      "region": "eu",
+      "displayName": "Taipan",
+      "aotcUrl": "https://www.aotc.gg/forever/character/eu/taipan-ismydaddy",
+      "colorSlot": 1
+    },
+    {
+      "slug": "phender-kx",
+      "region": "eu",
+      "displayName": "Phender",
+      "aotcUrl": "https://www.aotc.gg/forever/character/eu/phender-kx",
+      "colorSlot": 2
+    },
+    {
+      "slug": "fishlock-thefirst",
+      "region": "eu",
+      "displayName": "Fishlock",
+      "aotcUrl": "https://www.aotc.gg/forever/character/eu/fishlock-thefirst",
+      "colorSlot": 3
+    },
+    {
+      "slug": "sisu-jr",
+      "region": "eu",
+      "displayName": "Sisu",
+      "aotcUrl": "https://www.aotc.gg/forever/character/eu/sisu-jr",
+      "colorSlot": 4
+    }
+  ]
+}

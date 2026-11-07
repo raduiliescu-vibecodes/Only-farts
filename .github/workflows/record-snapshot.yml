@@ -1,0 +1,76 @@
+name: Record snapshot
+
+# Manual entry form (Actions tab → Record snapshot → Run workflow).
+# Fill in whatever you read on each character's AOTC.gg page; leave the rest blank.
+on:
+  workflow_dispatch:
+    inputs:
+      taipan_level:
+        description: "Taipan: level (1-60)"
+        required: false
+      taipan_gear_score:
+        description: "Taipan: Gear Score"
+        required: false
+      phender_level:
+        description: "Phender: level (1-60)"
+        required: false
+      phender_gear_score:
+        description: "Phender: Gear Score"
+        required: false
+      fishlock_level:
+        description: "Fishlock: level (1-60)"
+        required: false
+      fishlock_gear_score:
+        description: "Fishlock: Gear Score"
+        required: false
+      sisu_level:
+        description: "Sisu: level (1-60)"
+        required: false
+      sisu_gear_score:
+        description: "Sisu: Gear Score"
+        required: false
+      note:
+        description: "Optional note shown in the history table"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data-writes
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Inputs are passed through env (never interpolated into the script) and
+      # validated by the script itself.
+      - run: npm run snapshot -- --from-env
+        env:
+          LEVEL_TAIPAN_ISMYDADDY: ${{ inputs.taipan_level }}
+          GEAR_SCORE_TAIPAN_ISMYDADDY: ${{ inputs.taipan_gear_score }}
+          LEVEL_PHENDER_KX: ${{ inputs.phender_level }}
+          GEAR_SCORE_PHENDER_KX: ${{ inputs.phender_gear_score }}
+          LEVEL_FISHLOCK_THEFIRST: ${{ inputs.fishlock_level }}
+          GEAR_SCORE_FISHLOCK_THEFIRST: ${{ inputs.fishlock_gear_score }}
+          LEVEL_SISU_JR: ${{ inputs.sisu_level }}
+          GEAR_SCORE_SISU_JR: ${{ inputs.sisu_gear_score }}
+          NOTE: ${{ inputs.note }}
+      - name: Commit snapshot
+        env:
+          ACTOR: ${{ github.actor }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/history.json
+          git commit -m "data: manual snapshot by ${ACTOR}"
+          git pull --rebase
+          git push
