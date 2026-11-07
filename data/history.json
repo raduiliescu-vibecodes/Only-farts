@@ -35,6 +35,53 @@
         }
       ],
       "note": "From AOTC.gg screenshots, 7 Nov 2026 ~17:26–17:28 Romania time"
+    },
+    {
+      "character": "phender-kx",
+      "capturedAt": "2026-11-07T15:43:00Z",
+      "source": "manual",
+      "level": 18,
+      "gearScore": 105,
+      "itemLevel": 11,
+      "className": "Paladin",
+      "race": "Human",
+      "honorableKills": 0,
+      "stats": {
+        "health": 574,
+        "mana": 539,
+        "strength": 65,
+        "agility": 30,
+        "intellect": 31,
+        "stamina": 59,
+        "spirit": 42,
+        "attackPower": 167,
+        "mainHandDps": 24.2,
+        "meleeCrit": 5.4,
+        "rangedCrit": 3.4,
+        "spellPower": 0,
+        "spellCrit": 5.9,
+        "manaRegen": 52,
+        "armor": 1314,
+        "defense": 85,
+        "dodge": 4.4,
+        "parry": 4.8,
+        "block": 4.8
+      },
+      "talents": [
+        {
+          "tree": "Holy",
+          "points": 0
+        },
+        {
+          "tree": "Protection",
+          "points": 9
+        },
+        {
+          "tree": "Retribution",
+          "points": 0
+        }
+      ],
+      "note": "From AOTC.gg screenshots, 7 Nov 2026 ~17:42–17:43 Romania time"
     }
   ]
 }
