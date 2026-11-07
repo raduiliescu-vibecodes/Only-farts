@@ -1,15 +1,27 @@
-import { STAT_DEFS } from "@/lib/extra";
+import { STAT_DEFS, type StatDef, type StatGroup } from "@/lib/extra";
 import { formatDateTime, formatInt } from "@/lib/format";
 import type { CharacterSummary } from "@/lib/types";
 
-const pct = new Intl.NumberFormat("en-GB", { maximumFractionDigits: 2 });
+// At least one decimal, so 17 shows as "17.0%" and 14 DPS as "14.0", like the game's sheet.
+const oneDecimal = new Intl.NumberFormat("en-GB", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+function formatStat(def: StatDef, value: number): string {
+  if (def.kind === "percent") return `${oneDecimal.format(value)}%`;
+  if (def.kind === "decimal") return oneDecimal.format(value);
+  return formatInt(value);
+}
+
+const GROUPS: { id: StatGroup; title: string }[] = [
+  { id: "base", title: "Base stats" },
+  { id: "combat", title: "Combat" },
+];
 
 /** Latest recorded character-sheet stats, talents and honorable kills. */
 export function CharacterSheet({ c }: { c: CharacterSummary }) {
   const sheet = c.sheet;
   if (!sheet && c.honorableKills === null) return null;
 
-  const stats = STAT_DEFS.filter((d) => sheet?.stats[d.key] !== undefined);
+  const stats = sheet?.stats ?? {};
   const talents = sheet?.talents ?? null;
 
   return (
@@ -19,30 +31,36 @@ export function CharacterSheet({ c }: { c: CharacterSummary }) {
         {sheet && <p className="secondary">As of {formatDateTime(sheet.capturedAt)}</p>}
       </div>
 
-      {(stats.length > 0 || c.honorableKills !== null) && (
-        <dl className="sheet-grid">
-          {stats.map((d) => (
-            <div key={d.key}>
-              <dt>{d.label}</dt>
-              <dd>{d.percent ? `${pct.format(sheet!.stats[d.key])}%` : formatInt(sheet!.stats[d.key])}</dd>
-            </div>
-          ))}
-          {c.honorableKills !== null && (
-            <div>
-              <dt>Honorable Kills</dt>
-              <dd>{formatInt(c.honorableKills)}</dd>
-            </div>
-          )}
-        </dl>
-      )}
+      {GROUPS.map((g) => {
+        const defs = STAT_DEFS.filter((d) => d.group === g.id && stats[d.key] !== undefined);
+        const showHk = g.id === "base" && c.honorableKills !== null;
+        if (defs.length === 0 && !showHk) return null;
+        return (
+          <div key={g.id} className="sheet-group">
+            <h3 className="sheet-group-title">{g.title}</h3>
+            <dl className="sheet-grid">
+              {defs.map((d) => (
+                <div key={d.key}>
+                  <dt>{d.label}</dt>
+                  <dd>{formatStat(d, stats[d.key])}</dd>
+                </div>
+              ))}
+              {showHk && (
+                <div>
+                  <dt>Honorable Kills</dt>
+                  <dd>{formatInt(c.honorableKills)}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        );
+      })}
 
       {talents && talents.length > 0 && (
         <div className="talents">
           <h3 className="talents-title">
             Talents{" "}
-            <span className="secondary">
-              ({talents.map((t) => t.points).join(" / ")})
-            </span>
+            <span className="secondary">({talents.map((t) => t.points).join(" / ")})</span>
           </h3>
           <ul className="talent-list">
             {talents.map((t) => (

@@ -52,7 +52,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # Check out the branch tip at job start (not the SHA from dispatch time), so
+      # queued data runs build on each other instead of conflicting.
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
       - uses: actions/setup-node@v5
         with:
           node-version: 22
@@ -82,11 +86,18 @@ jobs:
           [ -n "$EXTRA" ] && args+=(--extra "$EXTRA")
           [ -n "$NOTE" ] && args+=(--note "$NOTE")
           npm run snapshot -- "${args[@]}"
+      # Refuse to commit data the site cannot build with (validates data/*.json).
+      - name: Check data and types
+        run: npm test && npm run typecheck
       - name: Commit snapshot
         env:
           ACTOR: ${{ github.actor }}
           CHARACTER: ${{ inputs.character }}
         run: |
+          if git diff --quiet -- data/history.json; then
+            echo "Snapshot already recorded; nothing to commit."
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/history.json

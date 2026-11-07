@@ -14,8 +14,15 @@ const NEVER: CharacterSyncStatus = { result: "never", message: "", since: null, 
 
 export default function Dashboard() {
   const summaries = characters.map((c) => summarize(c, history.snapshots));
-  const topGs = rankBy(summaries, "gearScore")[0];
-  const topLevel = rankBy(summaries, "level")[0];
+  const list = new Intl.ListFormat("en-GB", { type: "conjunction" });
+  // Everyone sharing rank 1, so a tie is shown as a tie.
+  const leaders = (metric: "gearScore" | "level") => {
+    const ranked = rankBy(summaries, metric);
+    const top = ranked.filter((r) => r.rank === 1);
+    return { value: top[0]?.[metric] ?? null, names: list.format(top.map((r) => r.displayName)) };
+  };
+  const topGs = leaders("gearScore");
+  const topLevel = leaders("level");
   const knownLevels = summaries.map((s) => s.level).filter((l): l is number => l !== null);
   const avgLevel = knownLevels.length
     ? knownLevels.reduce((a, b) => a + b, 0) / knownLevels.length
@@ -33,7 +40,7 @@ export default function Dashboard() {
         <p className="lede">
           Four heroes, one leaderboard: who levels fastest and who wears the best gear. Rankings,
           Gear Score and level history for{" "}
-          {new Intl.ListFormat("en-GB", { type: "conjunction" }).format(characters.map((c) => c.displayName))}.
+          {list.format(characters.map((c) => c.displayName))}.
         </p>
         <SyncBanner statuses={characters.map((c) => syncStatus.characters[c.slug] ?? NEVER)} />
       </section>
@@ -41,13 +48,13 @@ export default function Dashboard() {
       <section aria-label="Headline numbers" className="tiles">
         <StatTile
           label="Top Gear Score"
-          value={formatInt(topGs?.gearScore ?? null)}
-          detail={topGs?.gearScore != null ? topGs.displayName : "No data yet"}
+          value={formatInt(topGs.value)}
+          detail={topGs.value !== null ? topGs.names : "No data yet"}
         />
         <StatTile
           label="Highest level"
-          value={formatInt(topLevel?.level ?? null)}
-          detail={topLevel?.level != null ? topLevel.displayName : "No data yet"}
+          value={formatInt(topLevel.value)}
+          detail={topLevel.value !== null ? topLevel.names : "No data yet"}
         />
         <StatTile
           label="Average level"

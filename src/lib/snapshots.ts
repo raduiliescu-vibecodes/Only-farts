@@ -27,6 +27,44 @@ export function latestSnapshot(history: HistoryFile, slug: string): Snapshot | u
     .at(-1);
 }
 
+/** JSON with object keys sorted, so equal content compares equal regardless of key order. */
+function stableStringify(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableStringify).join(",")}]`;
+  if (value && typeof value === "object") {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .filter(([, v]) => v !== undefined)
+      .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+    return `{${entries.map(([k, v]) => `${JSON.stringify(k)}:${stableStringify(v)}`).join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+export function sameSnapshot(a: Snapshot, b: Snapshot): boolean {
+  return stableStringify(a) === stableStringify(b);
+}
+
+export type AddResult = { history: HistoryFile; added: boolean };
+
+/**
+ * Idempotent add for manual snapshots: an identical snapshot (same character,
+ * time and values) is a no-op, so re-running the workflow never duplicates.
+ * A *different* snapshot at the same character and time is refused, so
+ * recorded history is never silently overwritten.
+ */
+export function addSnapshot(history: HistoryFile, snap: Snapshot): AddResult {
+  const existing = history.snapshots.find(
+    (s) => s.character === snap.character && Date.parse(s.capturedAt) === Date.parse(snap.capturedAt),
+  );
+  if (existing) {
+    if (sameSnapshot(existing, snap)) return { history, added: false };
+    throw new Error(
+      `A different snapshot for ${snap.character} at ${snap.capturedAt} already exists. ` +
+        "Recorded history is not overwritten; correct data/history.json by hand if it is wrong.",
+    );
+  }
+  return { history: appendSnapshot(history, snap), added: true };
+}
+
 export function appendSnapshot(history: HistoryFile, snap: Snapshot): HistoryFile {
   const exists = history.snapshots.some(
     (s) => s.character === snap.character && s.capturedAt === snap.capturedAt,

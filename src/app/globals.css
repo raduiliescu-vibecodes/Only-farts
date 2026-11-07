@@ -736,6 +736,15 @@ h2 {
   font-size: 1.125rem;
   font-weight: 600;
 }
+.sheet-group + .sheet-group {
+  margin-top: 16px;
+}
+.sheet-group-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-bottom: 8px;
+}
 .talents {
   margin-top: 16px;
 }

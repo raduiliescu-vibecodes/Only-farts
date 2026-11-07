@@ -52,7 +52,13 @@ Until then, record values by hand from each character's AOTC.gg page:
     (Romania in winter is `+02:00`, in summer `+03:00`). Blank means "now".
   - **Extra stats:** optional character-sheet details as `key=value` pairs separated by `;`, e.g.
     `health=357; mana=839; intellect=52; spirit=62; stamina=31; spell power=35; spell crit=5.3%; armor=226; honorable kills=0; talents=Discipline 2 / Holy 0 / Shadow 7`.
-    Unknown keys are rejected, so typos never reach the site.
+    Unknown keys are rejected, so typos never reach the site. Supported: health, mana, energy,
+    strength, agility, intellect, stamina, spirit, attack power, ranged attack power, main/off
+    hand DPS, melee/ranged/spell crit, spell power, healing power, hit, mana regen, armor,
+    defense, dodge, parry, block, honorable kills and talents.
+  - **Re-running is safe:** recording the identical snapshot again changes nothing, and a
+    *different* snapshot for the same character and time is refused instead of overwriting
+    history. The workflow also checks the data with the test suite before committing.
 - **From a terminal:**
 
   ```bash

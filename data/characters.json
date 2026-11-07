@@ -13,21 +13,24 @@
     {
       "slug": "phender-kx",
       "region": "eu",
-      "displayName": "Phender",
+      "realm": "Normal",
+      "displayName": "Phender Kx",
       "aotcUrl": "https://www.aotc.gg/forever/character/eu/phender-kx",
       "colorSlot": 2
     },
     {
       "slug": "fishlock-thefirst",
       "region": "eu",
-      "displayName": "Fishlock",
+      "realm": "Normal",
+      "displayName": "Fishlock Thefirst",
       "aotcUrl": "https://www.aotc.gg/forever/character/eu/fishlock-thefirst",
       "colorSlot": 3
     },
     {
       "slug": "sisu-jr",
       "region": "eu",
-      "displayName": "Sisu",
+      "realm": "Normal",
+      "displayName": "Sisu Jr",
       "aotcUrl": "https://www.aotc.gg/forever/character/eu/sisu-jr",
       "colorSlot": 4
     }

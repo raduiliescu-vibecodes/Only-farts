@@ -20,13 +20,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # Check out the branch tip at job start (not the SHA from dispatch time), so
+      # queued data runs build on each other instead of conflicting.
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref }}
       - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run sync
+      # Refuse to commit data the site cannot build with (validates data/*.json).
+      - name: Check data and types
+        run: npm test && npm run typecheck
       - name: Commit data changes
         run: |
           if git diff --quiet -- data; then

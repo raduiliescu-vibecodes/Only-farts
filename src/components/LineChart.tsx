@@ -11,7 +11,11 @@ import {
 
 const HOUR = 60 * 60 * 1000;
 const DAY = 24 * HOUR;
-const X_INTERVALS = [HOUR, 3 * HOUR, 6 * HOUR, 12 * HOUR, DAY, 2 * DAY, 7 * DAY, 14 * DAY, 30 * DAY];
+const MINUTE = 60 * 1000;
+const X_INTERVALS = [
+  5 * MINUTE, 10 * MINUTE, 15 * MINUTE, 30 * MINUTE,
+  HOUR, 3 * HOUR, 6 * HOUR, 12 * HOUR, DAY, 2 * DAY, 7 * DAY, 14 * DAY, 30 * DAY,
+];
 const LABEL_MIN_GAP = 14;
 
 interface LineChartProps {
@@ -106,9 +110,12 @@ export function LineChart({
 
   // Scales -------------------------------------------------------------------
   const allValues = withData.flatMap((s) => s.points.map((p) => p.v));
+  const vMin = Math.min(...allValues);
+  const vMax = Math.max(...allValues);
+  // Keep points off the baseline: leave ~8% of the range below the lowest value.
   const yTicks = yTicksProp ?? niceTicks(
-    yDomain ? yDomain[0] : Math.min(...allValues),
-    yDomain ? yDomain[1] : Math.max(...allValues),
+    yDomain ? yDomain[0] : vMin === vMax ? vMin : Math.max(0, vMin - (vMax - vMin) * 0.08),
+    yDomain ? yDomain[1] : vMax,
   );
   const [y0, y1] = yDomain ?? [yTicks[0], yTicks[yTicks.length - 1]];
 
@@ -117,6 +124,11 @@ export function LineChart({
   if (x0 === x1) {
     x0 -= 12 * HOUR;
     x1 += 12 * HOUR;
+  } else {
+    // A little air so the first and last snapshots don't sit on the plot edges.
+    const pad = Math.max((x1 - x0) * 0.04, 2 * MINUTE);
+    x0 -= pad;
+    x1 += pad;
   }
 
   // Direct end-labels need a right gutter; drop them on narrow screens.

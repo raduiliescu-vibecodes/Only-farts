@@ -13,7 +13,7 @@
  */
 import { parseArgs } from "node:util";
 import { parseExtra } from "../src/lib/extra";
-import { appendSnapshot } from "../src/lib/snapshots";
+import { addSnapshot } from "../src/lib/snapshots";
 import type { CharacterConfig, Snapshot } from "../src/lib/types";
 import { PATHS, nowIso, readCharacters, readHistory, writeJsonIfChanged } from "./files";
 
@@ -151,9 +151,15 @@ async function main() {
   }
 
   if (snaps.length === 0) throw new Error("Nothing to record: give at least a level, Gear Score or item level.");
-  for (const s of snaps) history = appendSnapshot(history, s);
-  await writeJsonIfChanged(PATHS.history, history);
+  const added: Snapshot[] = [];
   for (const s of snaps) {
+    const r = addSnapshot(history, s);
+    history = r.history;
+    if (r.added) added.push(s);
+    else console.log(`Already recorded: ${s.character} @ ${s.capturedAt} (identical), nothing to do.`);
+  }
+  await writeJsonIfChanged(PATHS.history, history);
+  for (const s of added) {
     console.log(
       `Recorded ${s.character} @ ${s.capturedAt}: level ${s.level ?? "–"}, GS ${s.gearScore ?? "–"}, ilvl ${s.itemLevel ?? "–"}` +
         `${s.race || s.className ? `, ${[s.race, s.className].filter(Boolean).join(" ")}` : ""}` +
