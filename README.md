@@ -3,6 +3,8 @@
 A public dashboard for four **World of Warcraft: Forever** characters: rankings, Gear Score, level
 progression and history charts.
 
+**Live:** https://only-farts-nine.vercel.app
+
 | Character | AOTC.gg profile |
 |---|---|
 | Taipan | [taipan-ismydaddy](https://www.aotc.gg/forever/character/eu/taipan-ismydaddy) |
@@ -68,13 +70,19 @@ Requires Node 22+.
 
 ## Deploying to Vercel
 
-1. In Vercel, choose **Add New → Project** and import `raduiliescu-vibecodes/Only-farts`.
-2. Keep the detected **Next.js** preset. No environment variables are needed.
-3. Deploy. Every later push, including the sync and manual-snapshot commits, redeploys
-   automatically.
+The Vercel project `only-farts` exists and serves https://only-farts-nine.vercel.app. It was
+first deployed from the CLI (`npx vercel deploy --prod`), so it is **not yet connected to this
+repository**. To get automatic deploys on every push, including the sync and manual-snapshot
+commits:
 
-The scheduled sync runs on the repository's **default branch**, so make sure that is the branch
-Vercel deploys to production.
+1. Install the [Vercel GitHub App](https://github.com/apps/vercel) on the
+   `raduiliescu-vibecodes` account, with access to `Only-farts`.
+2. In Vercel: **only-farts → Settings → Git → Connect Git Repository** and pick
+   `raduiliescu-vibecodes/Only-farts`.
+3. Set the production branch to the repository's default branch. The scheduled sync runs on
+   the default branch, so the two must match.
+
+No environment variables are needed.
 
 ---
 

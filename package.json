@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "sync": "tsx scripts/sync-aotc.ts",
     "snapshot": "tsx scripts/record-snapshot.ts"
@@ -31,6 +31,6 @@
   },
   "description": "Only Farts — a WoW Forever dashboard tracking four characters.",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   }
 }
