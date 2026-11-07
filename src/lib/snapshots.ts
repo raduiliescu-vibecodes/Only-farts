@@ -1,7 +1,8 @@
 import type { FetchOutcome, ParsedProfile } from "./aotc";
 import type { CharacterSyncStatus, HistoryFile, Snapshot, SyncResult } from "./types";
 
-const COMPARED: (keyof Snapshot)[] = ["level", "gearScore", "itemLevel", "className", "race", "guild"];
+const COMPARED: (keyof Snapshot)[] = ["level", "gearScore", "itemLevel", "className", "race", "guild", "honorableKills"];
+const COMPARED_DEEP: (keyof Snapshot)[] = ["stats", "talents"];
 
 function utcDay(iso: string): string {
   return iso.slice(0, 10);
@@ -16,6 +17,10 @@ export function shouldRecord(prev: Snapshot | undefined, next: Snapshot): boolea
   for (const k of COMPARED) {
     const nv = next[k];
     if (nv !== null && nv !== undefined && nv !== prev[k]) return true;
+  }
+  for (const k of COMPARED_DEEP) {
+    const nv = next[k];
+    if (nv !== null && nv !== undefined && stableStringify(nv) !== stableStringify(prev[k] ?? null)) return true;
   }
   return utcDay(prev.capturedAt) !== utcDay(next.capturedAt);
 }
@@ -94,6 +99,22 @@ export function snapshotFromProfile(slug: string, profile: ParsedProfile, captur
  * Next sync status. `since` only moves when the result or message changes, so a
  * run that sees the same failure again leaves the file (and git) untouched.
  */
+/** Status transition for any source: `since` moves only when result or message change. */
+export function statusFor(
+  prev: CharacterSyncStatus | undefined,
+  result: SyncResult,
+  message: string,
+  now: string,
+): CharacterSyncStatus {
+  const unchanged = prev && prev.result === result && prev.message === message;
+  return {
+    result,
+    message,
+    since: unchanged ? prev.since : now,
+    lastSuccessAt: result === "ok" ? now : (prev?.lastSuccessAt ?? null),
+  };
+}
+
 export function nextSyncStatus(
   prev: CharacterSyncStatus | undefined,
   outcome: FetchOutcome,

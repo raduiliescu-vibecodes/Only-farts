@@ -1,0 +1,29 @@
+{
+  "source": "aotc",
+  "characters": {
+    "taipan-ismydaddy": {
+      "result": "blocked",
+      "message": "AOTC.gg answered with a Vercel Security Checkpoint (x-vercel-mitigated: challenge, HTTP 429). Automated requests are not served.",
+      "since": "2026-11-07T15:02:06Z",
+      "lastSuccessAt": null
+    },
+    "phender-kx": {
+      "result": "blocked",
+      "message": "AOTC.gg answered with a Vercel Security Checkpoint (x-vercel-mitigated: challenge, HTTP 429). Automated requests are not served.",
+      "since": "2026-11-07T15:02:09Z",
+      "lastSuccessAt": null
+    },
+    "fishlock-thefirst": {
+      "result": "blocked",
+      "message": "AOTC.gg answered with a Vercel Security Checkpoint (x-vercel-mitigated: challenge, HTTP 429). Automated requests are not served.",
+      "since": "2026-11-07T15:02:12Z",
+      "lastSuccessAt": null
+    },
+    "sisu-jr": {
+      "result": "blocked",
+      "message": "AOTC.gg answered with a Vercel Security Checkpoint (x-vercel-mitigated: challenge, HTTP 429). Automated requests are not served.",
+      "since": "2026-11-07T15:02:15Z",
+      "lastSuccessAt": null
+    }
+  }
+}

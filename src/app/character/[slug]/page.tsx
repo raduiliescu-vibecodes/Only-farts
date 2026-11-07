@@ -13,12 +13,23 @@ import { levelPace, rankBy, seriesFor, snapshotsFor, summarize } from "@/lib/sta
 const LEVEL_TICKS = [1, 10, 20, 30, 40, 50, 60];
 
 const RESULT_LABEL: Record<string, string> = {
-  ok: "Synced",
-  blocked: "Blocked by AOTC.gg bot protection",
-  http_error: "AOTC.gg returned an error",
+  ok: "Synced from the Blizzard API",
+  not_configured: "Waiting for Blizzard API access",
+  auth_error: "Blizzard API access rejected",
+  not_found: "Not visible in the Blizzard API yet",
+  rate_limited: "Rate limited by Blizzard",
+  rejected: "Last fetched data rejected by safety checks",
+  blocked: "Blocked by bot protection",
+  http_error: "Data source returned an error",
   network_error: "Network error",
   parse_failed: "Profile fetched but could not be read",
   never: "Not attempted yet",
+};
+
+const SOURCE_LABEL: Record<string, string> = {
+  blizzard: "Blizzard API",
+  manual: "Manual (AOTC.gg screenshot)",
+  aotc: "AOTC.gg sync",
 };
 
 export const dynamicParams = false;
@@ -163,7 +174,7 @@ export default async function CharacterPage(props: PageProps<"/character/[slug]"
                 {[...ordered].reverse().map((s) => (
                   <tr key={`${s.capturedAt}-${s.source}`}>
                     <td className="nowrap">{formatDateTime(s.capturedAt)}</td>
-                    <td>{s.source === "aotc" ? "AOTC.gg sync" : "Manual"}</td>
+                    <td>{SOURCE_LABEL[s.source] ?? s.source}</td>
                     <td className="num">{formatInt(s.level)}</td>
                     <td className="num">{formatInt(s.gearScore)}</td>
                     <td className="num">{formatInt(s.itemLevel)}</td>

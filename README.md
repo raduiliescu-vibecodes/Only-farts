@@ -23,24 +23,50 @@ progression and history charts.
 - **Charts** are step lines: a value holds until the next snapshot. Each chart has a legend,
   keyboard- and pointer-driven tooltips, and a data-table view.
 
-## Data sources and AOTC.gg sync
+## Data sources
 
-AOTC.gg has no public API. [`scripts/sync-aotc.ts`](scripts/sync-aotc.ts) runs every 6 hours from
-[`.github/workflows/sync-aotc.yml`](.github/workflows/sync-aotc.yml) and:
+### Automatic: Blizzard Battle.net API
 
-1. identifies itself with a descriptive User-Agent and reads `robots.txt`;
-2. requests each profile once, sequentially, with a pause between requests;
-3. parses level, Gear Score, item level, class, race and guild from embedded JSON, framework
-   payloads or visible text;
-4. appends a snapshot when something changed (or once per UTC day), and records the outcome in
-   [`data/sync-status.json`](data/sync-status.json).
+[`scripts/blizzard-sync.ts`](scripts/blizzard-sync.ts) runs every 6 hours from
+[`.github/workflows/sync-blizzard.yml`](.github/workflows/sync-blizzard.yml). WoW: Forever
+characters are in the official Profile API under the (live, not yet documented) namespace
+`profile-forever-eu`. Characters are realmless and addressed by `{name}-{surname}`, which is our
+slug. Per character the job reads the profile, `/equipment`, `/statistics`, `/specializations` and
+`/pvp-summary` (5 requests per character, 20 per run; Blizzard allows 36,000 an hour). A character
+appears in the API from level 10, after it logs out.
 
-**Current status: blocked.** Since 7 Nov 2026 every automated request to AOTC.gg (including
-`robots.txt`) has been answered with HTTP 429 and a *Vercel Security Checkpoint* (bot protection).
-The sync treats that as a hard stop. It records `blocked` and never tries to solve or get around
-the challenge. As a result, the parser has not yet been verified against a real AOTC.gg profile
-page. If AOTC.gg adds an API or allows this dashboard's User-Agent, the sync starts recording
-snapshots with no code changes, as long as the page exposes the data in one of the parsed shapes.
+- **Gear Score** is computed from the equipped items with the classic GearScore formula
+  ([`src/lib/gearscore.ts`](src/lib/gearscore.ts)), the algorithm Classic-era Gear Score figures
+  are based on. Item level is Blizzard's `equipped_item_level`.
+- **Safety:** a snapshot is refused if Blizzard returns a different character or the level goes
+  down. Fields the API doesn't provide are left out, so older valid values are never overwritten
+  with missing ones. Gear Score is left out if any equipped item can't be scored. A snapshot is
+  added only when something changed (or once a day).
+- **Monitoring:** per-character status in [`data/sync-status.json`](data/sync-status.json), shown
+  in the site banner and on each character page. Every run writes a comparison table to the job
+  summary. Token, HTTP or network failures fail the job, and GitHub notifies the repository owner.
+- **Acceptance gate:** snapshots are written only when [`data/sources.json`](data/sources.json)
+  has `blizzard.enabled: true`. It is switched on after a dry run has been checked against the
+  values recorded from AOTC.gg.
+
+**Setup (one time):**
+
+1. Create a free API client at https://develop.battle.net/access/clients (any name; Redirect URL
+   and Service URL `https://only-farts-nine.vercel.app`).
+2. Add two repository secrets under GitHub → Settings → Secrets and variables → Actions:
+   `BLIZZARD_CLIENT_ID` and `BLIZZARD_CLIENT_SECRET`.
+3. Run *Sync Blizzard API* with **Dry run** checked and compare the job summary with the dashboard.
+   If it matches, set `blizzard.enabled` to `true` in `data/sources.json`.
+
+Locally: `BLIZZARD_CLIENT_ID=… BLIZZARD_CLIENT_SECRET=… npm run sync:blizzard -- --dry`.
+
+### AOTC.gg (not polled)
+
+AOTC.gg has no public API, and every automated request (including `robots.txt`) is answered with
+HTTP 429 and a *Vercel Security Checkpoint*. The reader in [`src/lib/aotc.ts`](src/lib/aotc.ts)
+treats that as a hard stop and never tries to get around it. The *Sync AOTC.gg* workflow is now
+manual-only, and its statuses go to [`data/aotc-status.json`](data/aotc-status.json). A ready-to-send
+access request is in [`docs/aotc-api-access-request.md`](docs/aotc-api-access-request.md).
 
 ### Manual snapshots
 

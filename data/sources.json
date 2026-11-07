@@ -1,0 +1,8 @@
+{
+  "blizzard": {
+    "enabled": false,
+    "region": "eu",
+    "locale": "en_GB",
+    "note": "Snapshots are written only when enabled is true. It is switched on after a dry run has been checked against the recorded AOTC.gg values."
+  }
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addSnapshot, appendSnapshot, nextSyncStatus, sameSnapshot, shouldRecord } from "@/lib/snapshots";
+import { addSnapshot, appendSnapshot, nextSyncStatus, sameSnapshot, shouldRecord, statusFor } from "@/lib/snapshots";
 import type { Snapshot } from "@/lib/types";
 
 const base: Snapshot = {
@@ -23,6 +23,12 @@ describe("shouldRecord", () => {
   it("records a daily heartbeat when values are flat", () => {
     expect(shouldRecord(base, { ...base, capturedAt: "2026-11-08T00:10:00Z" })).toBe(true);
   });
+  it("records when only the character sheet changed", () => {
+    const prev = { ...base, stats: { health: 300 } };
+    expect(shouldRecord(prev, { ...prev, capturedAt: "2026-11-07T12:00:00Z", stats: { health: 310 } })).toBe(true);
+    expect(shouldRecord(prev, { ...prev, capturedAt: "2026-11-07T12:00:00Z", stats: { health: 300 } })).toBe(false);
+  });
+
   it("ignores fields the new snapshot does not know", () => {
     expect(shouldRecord(base, { ...base, capturedAt: "2026-11-07T12:00:00Z", gearScore: null })).toBe(false);
   });
@@ -83,6 +89,16 @@ describe("addSnapshot (idempotent manual recording)", () => {
     const r = addSnapshot({ snapshots: [taipan] }, manual);
     expect(r.history.snapshots[0]).toBe(taipan);
     expect(sameSnapshot(r.history.snapshots[0], taipan)).toBe(true);
+  });
+});
+
+describe("statusFor", () => {
+  it("keeps `since` for a repeated status and stamps success time", () => {
+    const a = statusFor(undefined, "not_configured", "waiting", "2026-11-07T00:00:00Z");
+    expect(statusFor(a, "not_configured", "waiting", "2026-11-07T06:00:00Z")).toEqual(a);
+    const ok = statusFor(a, "ok", "read", "2026-11-07T12:00:00Z");
+    expect(ok.lastSuccessAt).toBe("2026-11-07T12:00:00Z");
+    expect(statusFor(ok, "auth_error", "rejected", "2026-11-07T18:00:00Z").lastSuccessAt).toBe("2026-11-07T12:00:00Z");
   });
 });
 

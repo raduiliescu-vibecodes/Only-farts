@@ -20,7 +20,7 @@ export interface CharactersFile {
   characters: CharacterConfig[];
 }
 
-export type SnapshotSource = "aotc" | "manual";
+export type SnapshotSource = "aotc" | "manual" | "blizzard";
 
 /** One observation of a character at a point in time. Unknown values are null. */
 export interface Snapshot {
@@ -38,6 +38,8 @@ export interface Snapshot {
   /** Character-sheet stats keyed by STAT_DEFS keys (percentages as numbers, e.g. 5.3). */
   stats?: Record<string, number> | null;
   talents?: TalentTree[] | null;
+  /** Blizzard API: when the character last logged in (data reflects the last logout). */
+  lastLogin?: string | null;
   note?: string | null;
 }
 
@@ -51,7 +53,12 @@ export type SyncResult =
   | "http_error"
   | "network_error"
   | "parse_failed"
-  | "never";
+  | "never"
+  | "not_configured"
+  | "auth_error"
+  | "not_found"
+  | "rate_limited"
+  | "rejected";
 
 export interface CharacterSyncStatus {
   result: SyncResult;
@@ -62,6 +69,8 @@ export interface CharacterSyncStatus {
 }
 
 export interface SyncStatusFile {
+  /** Which automatic source these statuses describe. */
+  source?: "aotc" | "blizzard";
   characters: Record<string, CharacterSyncStatus>;
 }
 

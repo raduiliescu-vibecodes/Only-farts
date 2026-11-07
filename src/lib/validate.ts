@@ -36,11 +36,15 @@ function validateSnapshot(s: Snapshot, i: number, slugs: Set<string>, maxLevel: 
   const at = `history.json snapshot #${i + 1}`;
   if (!s || !slugs.has(s.character)) fail(`${at}: unknown character ${JSON.stringify(s?.character)}`);
   if (typeof s.capturedAt !== "string" || Number.isNaN(Date.parse(s.capturedAt))) fail(`${at}: bad capturedAt`);
-  if (s.source !== "aotc" && s.source !== "manual") fail(`${at}: source must be "aotc" or "manual"`);
+  if (s.source !== "aotc" && s.source !== "manual" && s.source !== "blizzard") {
+    fail(`${at}: source must be "aotc", "manual" or "blizzard"`);
+  }
   if (!(s.level === null || (Number.isInteger(s.level) && s.level >= 1 && s.level <= maxLevel))) fail(`${at}: bad level`);
   if (!(s.gearScore === null || isNum(s.gearScore))) fail(`${at}: bad gearScore`);
   if (!optNum(s.itemLevel) || !optNum(s.honorableKills)) fail(`${at}: bad itemLevel/honorableKills`);
-  if (!optStr(s.className) || !optStr(s.race) || !optStr(s.guild) || !optStr(s.note)) fail(`${at}: text fields must be strings`);
+  if (!optStr(s.className) || !optStr(s.race) || !optStr(s.guild) || !optStr(s.note) || !optStr(s.lastLogin)) {
+    fail(`${at}: text fields must be strings`);
+  }
   if (s.stats !== undefined && s.stats !== null) {
     for (const [k, v] of Object.entries(s.stats)) {
       if (!STAT_KEYS.has(k)) fail(`${at}: unknown stat "${k}"`);

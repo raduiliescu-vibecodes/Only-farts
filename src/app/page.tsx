@@ -113,19 +113,21 @@ export default function Dashboard() {
         <h2 id="how-h">How the data gets here</h2>
         <ol>
           <li>
-            <strong>Automatic sync.</strong> A scheduled GitHub Action checks each AOTC.gg profile
-            every 6 hours with an identified, rate-limited request. When it can read a profile, it
-            records a snapshot and the site redeploys.
+            <strong>Blizzard API, automatically.</strong> Every 6 hours a scheduled job reads each
+            character from the official Battle.net API (WoW: Forever profiles): level, equipment,
+            character sheet and talents. Gear Score is computed from the equipped items with the
+            classic GearScore formula. Characters update in the API after they log out.
           </li>
           <li>
-            <strong>When AOTC.gg refuses automated requests</strong> (right now it does), the sync
-            records that status and changes nothing. It never tries to get past the site&apos;s bot
-            protection.
+            <strong>Safety checks.</strong> A snapshot is only recorded when the data passes checks
+            (right character, level never goes down). Values that can&apos;t be established are left out,
+            so older valid values are never overwritten with missing ones. Problems show up here and
+            fail the job, which notifies the repository owner.
           </li>
           <li>
-            <strong>Manual snapshots.</strong> Run the <em>Record snapshot</em> workflow from the
-            repository&apos;s Actions tab with a character&apos;s current level and Gear Score from
-            their AOTC.gg page. History and charts update on the next deploy.
+            <strong>Earlier snapshots</strong> were recorded from AOTC.gg screenshots with the{" "}
+            <em>Record snapshot</em> workflow, which still works for corrections. AOTC.gg itself
+            offers no API and refuses automated requests, so it is not polled.
           </li>
         </ol>
       </section>

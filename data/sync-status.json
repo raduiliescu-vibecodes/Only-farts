@@ -1,27 +1,28 @@
 {
+  "source": "blizzard",
   "characters": {
     "taipan-ismydaddy": {
-      "result": "blocked",
-      "message": "AOTC.gg answered with a Vercel Security Checkpoint (x-vercel-mitigated: challenge, HTTP 429). Automated requests are not served.",
-      "since": "2026-11-07T15:02:06Z",
+      "result": "not_configured",
+      "message": "Waiting for Blizzard API access: the BLIZZARD_CLIENT_ID / BLIZZARD_CLIENT_SECRET secrets are not set.",
+      "since": "2026-11-07T16:30:00Z",
       "lastSuccessAt": null
     },
     "phender-kx": {
-      "result": "blocked",
-      "message": "AOTC.gg answered with a Vercel Security Checkpoint (x-vercel-mitigated: challenge, HTTP 429). Automated requests are not served.",
-      "since": "2026-11-07T15:02:09Z",
+      "result": "not_configured",
+      "message": "Waiting for Blizzard API access: the BLIZZARD_CLIENT_ID / BLIZZARD_CLIENT_SECRET secrets are not set.",
+      "since": "2026-11-07T16:30:00Z",
       "lastSuccessAt": null
     },
     "fishlock-thefirst": {
-      "result": "blocked",
-      "message": "AOTC.gg answered with a Vercel Security Checkpoint (x-vercel-mitigated: challenge, HTTP 429). Automated requests are not served.",
-      "since": "2026-11-07T15:02:12Z",
+      "result": "not_configured",
+      "message": "Waiting for Blizzard API access: the BLIZZARD_CLIENT_ID / BLIZZARD_CLIENT_SECRET secrets are not set.",
+      "since": "2026-11-07T16:30:00Z",
       "lastSuccessAt": null
     },
     "sisu-jr": {
-      "result": "blocked",
-      "message": "AOTC.gg answered with a Vercel Security Checkpoint (x-vercel-mitigated: challenge, HTTP 429). Automated requests are not served.",
-      "since": "2026-11-07T15:02:15Z",
+      "result": "not_configured",
+      "message": "Waiting for Blizzard API access: the BLIZZARD_CLIENT_ID / BLIZZARD_CLIENT_SECRET secrets are not set.",
+      "since": "2026-11-07T16:30:00Z",
       "lastSuccessAt": null
     }
   }

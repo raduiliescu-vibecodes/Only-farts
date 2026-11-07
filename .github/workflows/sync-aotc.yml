@@ -1,11 +1,11 @@
 name: Sync AOTC.gg
 
-# Checks the four AOTC.gg profiles every 6 hours. When a profile can be read,
-# a snapshot is committed to data/ and Vercel redeploys the site. When AOTC.gg
-# refuses automated requests, the status is recorded and nothing else changes.
+# Manual only. AOTC.gg answers every automated request with a bot checkpoint
+# (HTTP 429) and offers no API, so this is no longer scheduled; automatic
+# snapshots come from the Blizzard API (sync-blizzard.yml). Kept so it can be
+# re-checked by hand, e.g. if AOTC.gg grants API access. Statuses go to
+# data/aotc-status.json.
 on:
-  schedule:
-    - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:

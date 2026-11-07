@@ -9,6 +9,8 @@ export const PATHS = {
   characters: path.join(root, "data/characters.json"),
   history: path.join(root, "data/history.json"),
   syncStatus: path.join(root, "data/sync-status.json"),
+  aotcStatus: path.join(root, "data/aotc-status.json"),
+  sources: path.join(root, "data/sources.json"),
 };
 
 async function readJson<T>(file: string): Promise<T> {
@@ -27,6 +29,7 @@ export async function writeJsonIfChanged(file: string, data: unknown): Promise<b
 export const readCharacters = () => readJson<CharactersFile>(PATHS.characters);
 export const readHistory = () => readJson<HistoryFile>(PATHS.history);
 export const readSyncStatus = () => readJson<SyncStatusFile>(PATHS.syncStatus);
+export const readAotcStatus = () => readJson<SyncStatusFile>(PATHS.aotcStatus);
 
 /** ISO timestamp at whole-second precision. */
 export function nowIso(): string {

@@ -20,42 +20,63 @@ function OkIcon() {
   );
 }
 
+function InfoIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden className="status-icon">
+      <circle cx="8" cy="8" r="7" fill="var(--ink-2)" />
+      <path d="M8 7.2v4" stroke="var(--surface)" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="8" cy="4.8" r="0.95" fill="var(--surface)" />
+    </svg>
+  );
+}
+
+/** Status of the automatic source (the Blizzard API), as written by the sync job. */
 export function SyncBanner({ statuses }: { statuses: CharacterSyncStatus[] }) {
-  const blocked = statuses.filter((s) => s.result === "blocked");
-  const failing = statuses.filter((s) => s.result !== "ok" && s.result !== "blocked" && s.result !== "never");
   const successes = statuses
     .map((s) => s.lastSuccessAt)
     .filter((t): t is string => Boolean(t))
     .sort();
   const lastSuccess = successes[successes.length - 1] ?? null;
+  const ok = statuses.filter((s) => s.result === "ok").length;
+  const notConfigured = statuses.every((s) => s.result === "not_configured" || s.result === "never");
+  const problems = statuses.filter((s) => !["ok", "not_configured", "never"].includes(s.result));
 
-  if (blocked.length === 0 && failing.length === 0) {
+  if (notConfigured) {
+    return (
+      <div className="sync" role="note">
+        <InfoIcon />
+        <div>
+          <strong>Automatic sync is ready but not connected yet.</strong> Snapshots will come from the
+          official Blizzard API every 6 hours once the site&apos;s Battle.net API access is set up.
+          Until then the history shows snapshots recorded from AOTC.gg screenshots.
+        </div>
+      </div>
+    );
+  }
+
+  if (problems.length === 0) {
     return (
       <p className="sync sync-ok">
         <OkIcon />
         <span>
-          <strong>Auto-sync active.</strong>{" "}
-          {lastSuccess ? `Last AOTC.gg sync ${formatDateTime(lastSuccess)}.` : "Waiting for the first AOTC.gg sync."}
+          <strong>Auto-sync active.</strong> Data from the Blizzard API, refreshed every 6 hours
+          {lastSuccess ? `; last sync ${formatDateTime(lastSuccess)}` : ""}. Characters update after they log out.
         </span>
       </p>
     );
   }
 
-  const since = blocked.map((s) => s.since).filter(Boolean).sort()[0] ?? null;
+  const first = problems[0];
   return (
     <div className="sync sync-warn" role="note">
       <WarningIcon />
       <div>
-        <strong>Auto-sync paused.</strong>{" "}
-        {blocked.length > 0 ? (
-          <>
-            AOTC.gg protects its pages with a bot checkpoint, so automated requests are refused
-            {since ? ` (seen since ${formatDateTime(since)})` : ""}. Snapshots are recorded manually
-            until AOTC.gg offers an API or allows this dashboard&apos;s requests.
-          </>
-        ) : (
-          <>The last AOTC.gg sync failed for {failing.length} character(s).</>
-        )}
+        <strong>
+          Auto-sync problem for {problems.length} of {statuses.length} characters.
+        </strong>{" "}
+        {first.message}
+        {first.since ? ` (since ${formatDateTime(first.since)})` : ""}
+        {ok > 0 && <> {ok} synced normally.</>}
         {lastSuccess && <> Last successful sync {formatDateTime(lastSuccess)}.</>}
       </div>
     </div>

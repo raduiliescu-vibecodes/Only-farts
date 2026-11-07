@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "sync": "tsx scripts/sync-aotc.ts",
-    "snapshot": "tsx scripts/record-snapshot.ts"
+    "snapshot": "tsx scripts/record-snapshot.ts",
+    "sync:blizzard": "tsx scripts/blizzard-sync.ts"
   },
   "dependencies": {
     "next": "16.4.5",
@@ -29,7 +30,7 @@
     "typescript": "^5",
     "vitest": "^5.1.0"
   },
-  "description": "Only Farts — a WoW Forever dashboard tracking four characters.",
+  "description": "Only Farts \u2014 a WoW Forever dashboard tracking four characters.",
   "engines": {
     "node": "22.x"
   }

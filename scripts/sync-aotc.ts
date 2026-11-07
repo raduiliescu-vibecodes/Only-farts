@@ -20,7 +20,7 @@ import {
   nowIso,
   readCharacters,
   readHistory,
-  readSyncStatus,
+  readAotcStatus,
   writeJsonIfChanged,
 } from "./files";
 
@@ -38,7 +38,7 @@ function describe(o: FetchOutcome): string {
 async function main() {
   const { characters } = await readCharacters();
   let history = await readHistory();
-  const status = await readSyncStatus();
+  const status = await readAotcStatus();
   const lines: string[] = [];
 
   const origin = new URL(characters[0].aotcUrl).origin;
@@ -68,8 +68,8 @@ async function main() {
 
   if (!dry) {
     const wroteHistory = await writeJsonIfChanged(PATHS.history, history);
-    const wroteStatus = await writeJsonIfChanged(PATHS.syncStatus, status);
-    lines.push(`history.json ${wroteHistory ? "updated" : "unchanged"}, sync-status.json ${wroteStatus ? "updated" : "unchanged"}`);
+    const wroteStatus = await writeJsonIfChanged(PATHS.aotcStatus, status);
+    lines.push(`history.json ${wroteHistory ? "updated" : "unchanged"}, aotc-status.json ${wroteStatus ? "updated" : "unchanged"}`);
   } else {
     lines.push("dry run: nothing written");
   }
