@@ -70,17 +70,15 @@ Requires Node 22+.
 
 ## Deploying to Vercel
 
-The Vercel project `only-farts` exists and serves https://only-farts-nine.vercel.app. It was
-first deployed from the CLI (`npx vercel deploy --prod`), so it is **not yet connected to this
-repository**. To get automatic deploys on every push, including the sync and manual-snapshot
-commits:
+The Vercel project `only-farts` serves https://only-farts-nine.vercel.app and is connected to
+this repository through the Vercel GitHub App:
 
-1. Install the [Vercel GitHub App](https://github.com/apps/vercel) on the
-   `raduiliescu-vibecodes` account, with access to `Only-farts`.
-2. In Vercel: **only-farts → Settings → Git → Connect Git Repository** and pick
-   `raduiliescu-vibecodes/Only-farts`.
-3. Set the production branch to the repository's default branch. The scheduled sync runs on
-   the default branch, so the two must match.
+- Every push to the **production branch** (the repository's default branch,
+  `claude/kind-albattani-t3k7tg`) deploys to production. That includes the commits made by the
+  *Sync AOTC.gg* and *Record snapshot* workflows, so new data goes live without manual steps.
+- Pushes to any other branch get a preview deployment.
+- The scheduled sync runs on the default branch, so if you rename it (for example to `main`),
+  update the production branch in **Vercel → only-farts → Settings → Git** too.
 
 No environment variables are needed.
 
